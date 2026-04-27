@@ -1,0 +1,116 @@
+import json
+import os
+
+FILE_NAME = "complaints.json"
+
+# Load complaints from file
+def load_complaints():
+    if not os.path.exists(FILE_NAME):
+        return []
+    with open(FILE_NAME, "r") as file:
+        return json.load(file)
+
+# Save complaints to file
+def save_complaints(complaints):
+    with open(FILE_NAME, "w") as file:
+        json.dump(complaints, file, indent=4)
+
+# Add complaint
+def add_complaint():
+    complaints = load_complaints()
+    comp_id = input("Enter Complaint ID: ")
+    name = input("Enter Your Name: ")
+    issue = input("Enter Complaint: ")
+
+    complaint = {
+        "id": comp_id,
+        "name": name,
+        "issue": issue,
+        "status": "Pending"
+    }
+
+    complaints.append(complaint)
+    save_complaints(complaints)
+    print("✅ Complaint Added Successfully!\n")
+
+# View complaints
+def view_complaints():
+    complaints = load_complaints()
+    if not complaints:
+        print("No complaints found.\n")
+        return
+
+    for c in complaints:
+        print(f"ID: {c['id']}, Name: {c['name']}, Issue: {c['issue']}, Status: {c['status']}")
+    print()
+
+# Search complaint
+def search_complaint():
+    complaints = load_complaints()
+    comp_id = input("Enter Complaint ID to search: ")
+
+    for c in complaints:
+        if c["id"] == comp_id:
+            print("Complaint Found:")
+            print(c)
+            return
+    print("❌ Complaint Not Found\n")
+
+# Update complaint status
+def update_status():
+    complaints = load_complaints()
+    comp_id = input("Enter Complaint ID: ")
+
+    for c in complaints:
+        if c["id"] == comp_id:
+            new_status = input("Enter New Status (Resolved/In Progress): ")
+            c["status"] = new_status
+            save_complaints(complaints)
+            print("✅ Status Updated\n")
+            return
+    print("❌ Complaint Not Found\n")
+
+# Delete complaint
+def delete_complaint():
+    complaints = load_complaints()
+    comp_id = input("Enter Complaint ID to delete: ")
+
+    for c in complaints:
+        if c["id"] == comp_id:
+            complaints.remove(c)
+            save_complaints(complaints)
+            print("🗑️ Complaint Deleted\n")
+            return
+    print("❌ Complaint Not Found\n")
+
+# Menu
+def menu():
+    while True:
+        print("===== Digital Complaint Management System =====")
+        print("1. Add Complaint")
+        print("2. View Complaints")
+        print("3. Search Complaint")
+        print("4. Update Status")
+        print("5. Delete Complaint")
+        print("6. Exit")
+
+        choice = input("Enter choice: ")
+
+        if choice == "1":
+            add_complaint()
+        elif choice == "2":
+            view_complaints()
+        elif choice == "3":
+            search_complaint()
+        elif choice == "4":
+            update_status()
+        elif choice == "5":
+            delete_complaint()
+        elif choice == "6":
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice!\n")
+
+# Run program
+menu()
